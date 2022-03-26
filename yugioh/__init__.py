@@ -1,10 +1,12 @@
 import requests
 
+# Important variables
 base_url = 'https://db.ygoprodeck.com/api/v7/cardinfo.php'
 monsters = ["Effect Monster", "Flip Effect Monster", "Flip Tuner Effect Monster", "Gemini Monster", "Normal Monster", "Normal Tuner Monster", "Pendulum Effect Monster", "Pendulum Flip Effect Monster", "Pendulum Normal Monster", "Pendulum Tuner Effect Monster", "Ritual Effect Monster", "Ritual Monster", "Spirit Monster", "Toon Monster", "Tuner Monster", "Union Effect Monster", "Fusion Monster", "Pendulum Effect Fusion Monster", "Synchro Monster", "Synchro Pendulum Effect Monster", "Synchro Tuner Monster", "XYZ Monster", "XYZ Pendulum Effect Monster"]
 specials = ["Skill Card", "Spell Card", "Trap Card"]
 link = "Link Monster"
 
+# Get a card by typing an exact name or id
 class get_card:
     def __init__(self, card_name=None, card_id=None):
         if card_name is not None:
@@ -41,8 +43,23 @@ class get_card:
         if self.type in specials:
             self.defense = None
 
+# Get card list with similar names to the one typed.
 class get_cards_by_name:
     def __init__(self, keyword):
         parameters = {'fname':keyword}
         cards = requests.get(base_url, params=parameters).json()
         self.list = [card['name'] for card in cards['data']]
+
+# Get list with cards in the banlist and it's banlist status (limited, semi, forbidden).
+# Example usage: print(card.list[0][1]['ban_tcg'])
+class get_banlist:
+    def __init__(self, banlist):
+        parameters = {'banlist':banlist}
+        cards = requests.get(base_url, params=parameters).json()
+        self.list = []
+        for card in cards['data']:
+            auxList = []
+            auxList.append(card['name'])
+            auxList.append(card['banlist_info'])
+            self.list.append(auxList)
+
